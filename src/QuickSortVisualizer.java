@@ -81,46 +81,47 @@ public class QuickSortVisualizer {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.getContentPane().add(panel);
+        frame.setResizable(false);
         frame.setVisible(true);
         frame.setTitle("Quick Sort");
         JButton startSort = new JButton("Start");
         startSort.addActionListener(panel);
         panel.add(startSort);
+
     }
 }
 
 class QuickSort extends JPanel implements ActionListener {
     public int[] array;
-    public int[] pos;
+    private final int[] pos;
+    private final int[] stack;
     public int WIDTH;
     public int HEIGHT;
-    private final int arrayLength;
-    private int h, l = 0, top = -1;
-    public Timer timer;
-    private int[] stack;
-
-    private final static Random r = new Random();
-    private int delay = 30;
-    private int totalArrayAccess = 0;
-    private long start = 0L, now = 0L;
     private int _x, v1;
+    private int h;
+    private final int arrayLength;
+
+    private int l = 0, top = -1;
+    private int totalArrayAccess = 0;
+    private int baseHeight;
+    private final int delay = 30;
+    private final static Random r = new Random();
+    private long start = 0L;
     private boolean isSort = false;
 
+    private final double elapseTimeCorrection = Math.pow(10, 9);
 
     public QuickSort(int width, int height) {
         this.WIDTH = width;
         this.HEIGHT = height;
-
         this.arrayLength = (width / 4) - 3;
         this.pos = new int[arrayLength];
         this.array = this.generateArray();
         this.h = array.length - 1;
         this.stack = new int[h - l + 1];
+        this.baseHeight = HEIGHT - 40;
         stack[++top] = l;
         stack[++top] = h;
-        System.out.println(start);
-
-
     }
 
     public QuickSort() {
@@ -143,29 +144,30 @@ class QuickSort extends JPanel implements ActionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         super.setBackground(Color.black);
+        int rectWidth = 3;
+        long now = System.currentTimeMillis();
         g.setColor(Color.white);
-        now = System.currentTimeMillis();
         g.drawString("Array access : " + totalArrayAccess, 10, 5 + g.getFontMetrics().getHeight());
         g.drawString("Delay : " + delay + " ms", 10, 20 + g.getFontMetrics().getHeight());
         g.drawString(
                 "Elapse time : " +
-                        (((now - start) > Math.pow(10, 9))
+                        (((now - start) > elapseTimeCorrection)
                                 ? 0 : (now - start)) + " ms",
                 10, 35 + g.getFontMetrics().getHeight());
         int i;
         if (isSort) {
             g.setColor(Color.green);
             for (i = 0; i < array.length - 1; i++) {
-                g.fillRect(pos[i], HEIGHT - 40, 3, -array[i]);
+                g.fillRect(pos[i], baseHeight, rectWidth, -array[i]);
             }
             g.setColor(Color.red);
-            g.fillRect(pos[i], HEIGHT - 40, 3, -array[i]);
+            g.fillRect(pos[i], baseHeight, rectWidth, -array[i]);
         } else {
             for (i = 0; i < array.length - 1; i++) {
-                g.fillRect(pos[i], HEIGHT - 40, 3, -array[i]);
+                g.fillRect(pos[i], baseHeight, rectWidth, -array[i]);
             }
             g.setColor(Color.red);
-            g.fillRect(_x, HEIGHT - 40, 3, -v1);
+            g.fillRect(_x, baseHeight, rectWidth, -v1);
         }
 
     }
@@ -222,7 +224,7 @@ class QuickSort extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         start = System.currentTimeMillis();
-        timer = new Timer(delay, new ActionListener() {
+        Timer timer = new Timer(delay, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
                 if (isSort) {

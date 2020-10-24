@@ -42,6 +42,7 @@ public class BubbleSortVisualizer {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.getContentPane().add(panel);
+        frame.setResizable(false);
         frame.setVisible(true);
         frame.setTitle("Bubble Sort");
         JButton startSort = new JButton("Start");
@@ -53,23 +54,23 @@ public class BubbleSortVisualizer {
 // using optimized bubble sort
 class BubbleSort extends JPanel implements ActionListener {
     public int[] array;
-    public int[] pos;
+    private final int[] pos;
     public int WIDTH;
     public int HEIGHT;
     private final int arrayLength;
-    public Timer timer;
     public int x, x2, v1, v2;
+    private long start;
+    private int curIdx;
+
     private boolean isSort = true; // for bubble sort optimized
     private boolean lastCheck = false;
     private final int delay = 30;
     private final int baseHeight;
     private int totalArrayAccess = 0;
-    private long start = 0;
-    private long now = 0L;
 
     private final static Random r = new Random();
+    private final double elapseTimeCorrection = Math.pow(10, 9);
 
-    private int curIdx;
 
     public BubbleSort(int width, int height) {
         this.WIDTH = width;
@@ -105,44 +106,36 @@ class BubbleSort extends JPanel implements ActionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         super.setBackground(Color.black);
-        now = System.currentTimeMillis();
+        long now = System.currentTimeMillis();
+        int rectWidth = 3;
         g.setColor(Color.white);
         if (!lastCheck) {
-
-            g.drawString("Array access : " + totalArrayAccess, 10, 5 + g.getFontMetrics().getHeight());
-            g.drawString("Delay : " + delay + " ms", 10, 20 + g.getFontMetrics().getHeight());
-            g.drawString(
-                    "Elapse time : " +
-                            (((now - start) > Math.pow(10, 9))
-                                    ? 0 : (now - start)) + " ms",
-                    10, 35 + g.getFontMetrics().getHeight());
             for (int i = 0; i < arrayLength - 1; i++) {
-                g.fillRect(pos[i], baseHeight, 3, -array[i]);
+                g.fillRect(pos[i], baseHeight, rectWidth, -array[i]);
             }
             g.setColor(Color.red);
-            g.fillRect(x2, baseHeight, 3, -v2);
+            g.fillRect(x2, baseHeight, rectWidth, -v2);
 
             g.setColor(Color.green);
-            g.fillRect(x, baseHeight, 3, -v1);
+            g.fillRect(x, baseHeight, rectWidth, -v1);
         } else {
-            g.setColor(Color.white);
-            g.drawString("Total array access : " + totalArrayAccess, 10, 5 + g.getFontMetrics().getHeight());
-            g.drawString("Delay : " + delay + " ms", 10, 20 + g.getFontMetrics().getHeight());
-            g.drawString(
-                    "Elapse time : " +
-                            (((now - start) > Math.pow(10, 9))
-                                    ? 0 : (now - start)) + " ms",
-                    10, 35 + g.getFontMetrics().getHeight());
             g.setColor(Color.green);
             for (int i = 0; i < arrayLength - 1; i++) {
 
                 if (i == arrayLength - 2) {
                     g.setColor(Color.red);
                 }
-                g.fillRect(pos[i], baseHeight, 3, -array[i]);
+                g.fillRect(pos[i], baseHeight, rectWidth, -array[i]);
             }
-
         }
+        g.setColor(Color.white);
+        g.drawString("Array access : " + totalArrayAccess, 10, 5 + g.getFontMetrics().getHeight());
+        g.drawString("Delay : " + delay + " ms", 10, 20 + g.getFontMetrics().getHeight());
+        g.drawString(
+                "Elapse time : " +
+                        (((now - start) > elapseTimeCorrection)
+                                ? 0 : (now - start)) + " ms",
+                10, 35 + g.getFontMetrics().getHeight());
     }
 
     private void sortOne() {
@@ -165,7 +158,7 @@ class BubbleSort extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         start = System.currentTimeMillis();
-        timer = new Timer(delay, new ActionListener() {
+        Timer timer = new Timer(delay, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 sortOne();
                 if (isSort) {

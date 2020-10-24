@@ -16,6 +16,7 @@ public class SelectionSortVisualizer {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.getContentPane().add(panel);
+        frame.setResizable(false);
         frame.setVisible(true);
         frame.setTitle("Selection Sort");
         JButton startSort = new JButton("Start");
@@ -26,28 +27,27 @@ public class SelectionSortVisualizer {
 
 class SelectionSort extends JPanel implements ActionListener {
     public int[] array;
-    public int[] pos;
+    private final int[] pos;
     public int WIDTH;
     public int HEIGHT;
-    private int arrayLength;
+    private final int arrayLength;
+    private int x, x2, v1, v2;
+
     private final static Random r = new Random();
-    public Timer timer;
-    public int x, x2, v1, v2;
-    private int delay = 30;
+    private final int delay = 30;
     private int curIdx = 0;
-    private int baseHeight;
-    private int rectWidth = 3;
+    private final int baseHeight;
     private int totalArrayAccess = 0;
-    private long start = 0L, now = 0L;
+    private long start = 0L;
+    private final double elapseTimeCorrection = Math.pow(10, 9);
 
     public SelectionSort(int width, int height) {
         this.WIDTH = width;
         this.HEIGHT = height;
 
-        this.arrayLength = (width / 4) - 4;
+        this.arrayLength = (width / 4) - 3;
         this.pos = new int[arrayLength];
         this.array = this.generateArray();
-        this.curIdx = 0;
         this.baseHeight = HEIGHT - 40;
     }
 
@@ -76,7 +76,7 @@ class SelectionSort extends JPanel implements ActionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         super.setBackground(Color.black);
-
+        int rectWidth = 3;
         if (!isSortingDone()) {
             g.setColor(Color.white);
             for (int i = 0; i < arrayLength - 1; i++) {
@@ -96,13 +96,13 @@ class SelectionSort extends JPanel implements ActionListener {
             g.setColor(Color.red);
             g.fillRect(x2, baseHeight, rectWidth, -v2);
         }
-        now = System.currentTimeMillis();
+        long now = System.currentTimeMillis();
         g.setColor(Color.white);
         g.drawString("Array access : " + totalArrayAccess, 10, 5 + g.getFontMetrics().getHeight());
         g.drawString("Delay : " + delay + " ms", 10, 20 + g.getFontMetrics().getHeight());
         g.drawString(
                 "Elapse time : " +
-                        (((now - start) > Math.pow(10, 9))
+                        (((now - start) > elapseTimeCorrection)
                                 ? 0 : (now - start)) + " ms",
                 10, 35 + g.getFontMetrics().getHeight());
     }
@@ -128,7 +128,7 @@ class SelectionSort extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         start = System.currentTimeMillis();
-        timer = new Timer(delay, new ActionListener() {
+        Timer timer = new Timer(delay, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (isSortingDone()) {
                     ((Timer) e.getSource()).stop();

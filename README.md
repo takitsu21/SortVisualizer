@@ -1,7 +1,8 @@
-# SortVIsualizer
+# Sort Visualizer
+
 Simple implementation of sort algorithms visualisation in Java
 
-- Merge Sort O(n log n)
+- Merge Sort O(nlog(n))
 
 ![Merge Sort](https://media.giphy.com/media/Zmk7xKnFpcd4wUdwVl/giphy.gif)
 
@@ -17,3 +18,6 @@ Simple implementation of sort algorithms visualisation in Java
 
 ![Selection Sort](https://media.giphy.com/media/FcQEIomQ090GnMjll7/giphy.gif)
 
+- Radix Sort LSD (O(nw) where w is the average key length measured in number of digits)
+
+![Radix Sort LSD](https://media.giphy.com/media/F4pmxIYTMKaz2YUPiR/giphy.gif)

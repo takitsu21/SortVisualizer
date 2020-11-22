@@ -65,9 +65,6 @@ class SelectionSort extends JPanel implements ActionListener {
         int xp = 0;
         int space = 4;
         for (int i = 0; i < arrayLength; i++) {
-//            if (i < 70)
-//                t[i] = arrayLength - i;
-//            else
             t[i] = r.nextInt(HEIGHT - 100);
             pos[i] = xp;
             xp += space;

@@ -4,7 +4,7 @@ Simple implementation of sort algorithms visualisation in Java
 
 - Merge Sort O(nlog(n))
 
-![Merge Sort](https://media.giphy.com/media/Zmk7xKnFpcd4wUdwVl/giphy.gif)
+![Merge Sort](https://media.giphy.com/media/z04RxoKxTlUvGjjuUn/giphy.gif)
 
 - Quick Sort O(nlog(n)) (O(n²) for the worst case if you choose the bad pivot)
 
@@ -16,11 +16,11 @@ Simple implementation of sort algorithms visualisation in Java
 
 - Selection Sort (O(n²))
 
-![Selection Sort](https://media.giphy.com/media/FcQEIomQ090GnMjll7/giphy.gif)
+![Selection Sort](https://media.giphy.com/media/VOgRZ9c1X1RPalCvAq/giphy.gif)
 
 - Radix Sort LSD (O(nw) where w is the average key length measured in number of digits)
 
-![Radix Sort LSD](https://media.giphy.com/media/F4pmxIYTMKaz2YUPiR/giphy.gif)
+![Radix Sort LSD](https://media.giphy.com/media/Ow5AYXN96CzUVU5fHK/giphy.gif)
 
 - Insertion Sort (O(n²))
 

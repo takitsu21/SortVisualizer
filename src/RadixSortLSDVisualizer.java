@@ -155,8 +155,10 @@ class RadixSortLSD extends JPanel implements ActionListener {
         int xp = 0;
         int space = 4;
         for (int i = 0; i < arrayLength; i++) {
-            t[i] = r.nextInt(HEIGHT - 100);
+//            t[i] = r.nextInt(HEIGHT - 100);
+            t[i] = arrayLength - i;
             pos[i] = xp;
+
             xp += space;
         }
         return t;

@@ -122,7 +122,8 @@ class MergeSort extends JPanel implements ActionListener {
         int xp = 0;
         int space = 4;
         for (int i = 0; i < arrayLength; i++) {
-            t[i] = r.nextInt(HEIGHT - 100);
+            t[i] = i;
+//            t[i] = r.nextInt(HEIGHT - 100);
             pos[i] = xp;
             xp += space;
         }

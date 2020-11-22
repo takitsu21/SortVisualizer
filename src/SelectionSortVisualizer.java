@@ -65,6 +65,9 @@ class SelectionSort extends JPanel implements ActionListener {
         int xp = 0;
         int space = 4;
         for (int i = 0; i < arrayLength; i++) {
+//            if (i < 70)
+//                t[i] = arrayLength - i;
+//            else
             t[i] = r.nextInt(HEIGHT - 100);
             pos[i] = xp;
             xp += space;
@@ -80,12 +83,14 @@ class SelectionSort extends JPanel implements ActionListener {
         if (!isSortingDone()) {
             g.setColor(Color.white);
             for (int i = 0; i < arrayLength - 1; i++) {
-                g.fillRect(pos[i], baseHeight, rectWidth, -array[i]);
+                if (x2 != pos[i]) {
+                    g.fillRect(pos[i], baseHeight, rectWidth, -array[i]);
+                }
             }
-            g.setColor(Color.red);
+            g.setColor(Color.green);
             g.fillRect(x2, baseHeight, rectWidth, -v2);
 
-            g.setColor(Color.green);
+            g.setColor(Color.red);
             g.fillRect(x, baseHeight, rectWidth, -v1);
         } else {
 

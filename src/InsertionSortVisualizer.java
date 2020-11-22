@@ -6,36 +6,10 @@ import java.util.Arrays;
 import java.util.Random;
 import javax.swing.Timer;
 
-class BubbleSortTest {
-    public static void main(String[] args) {
-        BubbleSortTest myTest = new BubbleSortTest();
-        int t[] = ArrayUtil.getRandomArray(15);
-        System.out.println(Arrays.toString(t));
-        myTest.bubbleSortOptimized(t);
-        System.out.println(Arrays.toString(t));
-    }
-
-    public void bubbleSortOptimized(int[] t) {
-        boolean isSort;
-        for (int i = t.length - 1; i > 0; i--) {
-            isSort = true;
-            for (int j = 0; j < i; j++) {
-                if (t[j + 1] < t[j]) {
-                    ArrayUtil.swap(t, j + 1, j);
-                    isSort = false;
-                }
-            }
-            if (isSort) {
-                break;
-            }
-        }
-    }
-}
-
-public class BubbleSortVisualizer {
+public class InsertionSortVisualizer {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
-        BubbleSort panel = new BubbleSort();
+        InsertionSort panel = new InsertionSort();
         frame.setBackground(Color.BLACK);
         System.out.println(Arrays.toString(panel.array));
         frame.setSize(panel.WIDTH, panel.HEIGHT);
@@ -44,50 +18,42 @@ public class BubbleSortVisualizer {
         frame.getContentPane().add(panel);
         frame.setResizable(false);
         frame.setVisible(true);
-        frame.setTitle("Bubble Sort");
+        frame.setTitle("Insertion Sort");
         JButton startSort = new JButton("Start");
         startSort.addActionListener(panel);
         panel.add(startSort);
     }
 }
 
-// using optimized bubble sort
-class BubbleSort extends JPanel implements ActionListener {
+class InsertionSort extends JPanel implements ActionListener {
     public int[] array;
     private final int[] pos;
     public int WIDTH;
     public int HEIGHT;
     private final int arrayLength;
-    public int x, x2, v1, v2;
-    private long start;
-    private int curIdx;
-
-    private boolean isSort = true; // for bubble sort optimized
-    private boolean lastCheck = false;
-    private final int delay = 30;
-    private final int baseHeight;
-    private int totalArrayAccess = 0;
+    private int x, x2, v1, v2;
 
     private final static Random r = new Random();
+    private final int delay = 30;
+    private int curIdx = 1;
+    private int jIdx = 0;
+    private final int baseHeight;
+    private boolean isSorted = false;
+    private int totalArrayAccess = 0;
+    private long start = 0L;
     private final double elapseTimeCorrection = Math.pow(10, 9);
 
-
-    public BubbleSort(int width, int height) {
+    public InsertionSort(int width, int height) {
         this.WIDTH = width;
         this.HEIGHT = height;
         this.arrayLength = (width / 4) - 3;
         this.pos = new int[arrayLength];
         this.array = this.generateArray();
-        this.curIdx = arrayLength - 1;
         this.baseHeight = HEIGHT - 40;
     }
 
-    public BubbleSort() {
+    public InsertionSort() {
         this(700, 300);
-    }
-
-    private boolean isSortingDone() {
-        return curIdx == 0;
     }
 
     public int[] generateArray() {
@@ -95,8 +61,7 @@ class BubbleSort extends JPanel implements ActionListener {
         int xp = 0;
         int space = 4;
         for (int i = 0; i < arrayLength; i++) {
-//            t[i] = r.nextInt(HEIGHT - 100);
-            t[i] = arrayLength - i;
+            t[i] = r.nextInt(HEIGHT - 100);
             pos[i] = xp;
             xp += space;
         }
@@ -107,28 +72,29 @@ class BubbleSort extends JPanel implements ActionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         super.setBackground(Color.black);
-        long now = System.currentTimeMillis();
         int rectWidth = 3;
-        g.setColor(Color.white);
-        if (!lastCheck) {
+        if (!isSorted) {
+            g.setColor(Color.white);
+            for (int i = 0; i < arrayLength - 1; i++) {
+                if (x2 != pos[i]) {
+                    g.fillRect(pos[i], baseHeight, rectWidth, -array[i]);
+                }
+            }
+            g.setColor(Color.green);
+            g.fillRect(x2, baseHeight, rectWidth, -v2);
+
+            g.setColor(Color.red);
+            g.fillRect(x, baseHeight, rectWidth, -v1);
+        } else {
+
+            g.setColor(Color.green);
             for (int i = 0; i < arrayLength - 1; i++) {
                 g.fillRect(pos[i], baseHeight, rectWidth, -array[i]);
             }
             g.setColor(Color.red);
             g.fillRect(x2, baseHeight, rectWidth, -v2);
-
-            g.setColor(Color.green);
-            g.fillRect(x, baseHeight, rectWidth, -v1);
-        } else {
-            g.setColor(Color.green);
-            for (int i = 0; i < arrayLength - 1; i++) {
-
-                if (i == arrayLength - 2) {
-                    g.setColor(Color.red);
-                }
-                g.fillRect(pos[i], baseHeight, rectWidth, -array[i]);
-            }
         }
+        long now = System.currentTimeMillis();
         g.setColor(Color.white);
         g.drawString("Array access : " + totalArrayAccess, 10, 5 + g.getFontMetrics().getHeight());
         g.drawString("Delay : " + delay + " ms", 10, 20 + g.getFontMetrics().getHeight());
@@ -140,20 +106,27 @@ class BubbleSort extends JPanel implements ActionListener {
     }
 
     private void sortOne() {
-        int i;
-        for (i = 0; i < curIdx; i++) {
-            if (array[i + 1] < array[i]) {
-                ArrayUtil.swap(array, i + 1, i);
-                isSort = false;
-                repaint();
+        int tmp;
+        if (curIdx < arrayLength - 1) {
+            tmp = array[curIdx];
+
+            jIdx = curIdx;
+
+            while (jIdx > 0 && array[jIdx - 1] > tmp) {
+                array[jIdx] = array[jIdx - 1];
+                totalArrayAccess += 2;
+                jIdx--;
             }
-            totalArrayAccess += 6;
+            array[jIdx] = tmp;
+            x = pos[jIdx];
+            v1 = array[jIdx];
+            x2 = pos[curIdx];
+            v2 = array[curIdx];
+            totalArrayAccess++;
+            curIdx++;
+        } else {
+            isSorted = true;
         }
-        x = pos[curIdx];
-        x2 = pos[i];
-        v1 = array[curIdx];
-        v2 = array[i];
-        curIdx--;
     }
 
     @Override
@@ -161,15 +134,15 @@ class BubbleSort extends JPanel implements ActionListener {
         start = System.currentTimeMillis();
         Timer timer = new Timer(delay, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                sortOne();
-                if (isSort) {
-                    lastCheck = true;
+                if (isSorted) {
                     ((Timer) e.getSource()).stop();
                     System.out.println("Sort done");
                     System.out.println(Arrays.toString(array));
+                } else {
+                    sortOne();
                     repaint();
                 }
-                isSort = true;
+
             }
         });
         timer.start();
